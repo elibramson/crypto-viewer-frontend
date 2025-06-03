@@ -9,6 +9,7 @@ const App = () => {
   const [navigationItems, setNavigationItems] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [isItemLoading, setIsItemLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [selectedItemData, setSelectedItemData] = useState(null);
 
@@ -45,6 +46,9 @@ const App = () => {
   };
 
   const fetchSelectedItemDetails = () => {
+    setIsItemLoading(true);
+    setErrorMessage(null);
+    
     axios.get(`http://localhost:8000/cryptocurrencies/${selectedItemId}`)
       .then((response) => {
         console.log('Response received:', response.data);
@@ -53,6 +57,9 @@ const App = () => {
       .catch((error) => {
         console.error('Error fetching item details:', error);
         setErrorMessage(error.message);
+      })
+      .finally(() => {
+        setIsItemLoading(false);
       });
   };
 
@@ -93,7 +100,11 @@ const App = () => {
         className="h-screen overflow-scroll"
       />
       <div className="mx-auto my-auto">
-        <CryptocurrencyCard />
+        {isItemLoading ? (
+          <Spin size="large" />
+        ) : (
+          <CryptocurrencyCard currencyData={selectedItemData} />
+        )}
       </div>
     </div>
   );
