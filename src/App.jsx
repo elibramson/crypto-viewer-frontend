@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
-import { Menu, Spin } from 'antd';
+import { SearchOutlined, StarOutlined, StarFilled } from '@ant-design/icons';
+import { Menu, Spin, Input, Layout, Typography, Badge } from 'antd';
 import CryptocurrencyCard from './components/CryptocurrencyCard';
+
+const { Header, Sider, Content } = Layout;
+const { Title } = Typography;
 
 const App = () => {
   // State declarations
@@ -12,6 +15,8 @@ const App = () => {
   const [isItemLoading, setIsItemLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [selectedItemData, setSelectedItemData] = useState(null);
+  const [searchText, setSearchText] = useState('');
+  const [favorites, setFavorites] = useState([]);
 
   // API calls
   const fetchNavigationData = () => {
@@ -69,6 +74,26 @@ const App = () => {
     setSelectedItemId(event.key);
   };
 
+  const handleSearch = (value) => {
+    setSearchText(value);
+    // Filter menu items based on search
+    const filteredItems = navigationItems[0].children.filter(item =>
+      item.label.toLowerCase().includes(value.toLowerCase())
+    );
+    setNavigationItems([{
+      ...navigationItems[0],
+      children: filteredItems
+    }]);
+  };
+
+  const toggleFavorite = (id) => {
+    setFavorites(prev => 
+      prev.includes(id) 
+        ? prev.filter(favId => favId !== id)
+        : [...prev, id]
+    );
+  };
+
   // Effects
   useEffect(() => {
     fetchNavigationData();
@@ -80,33 +105,64 @@ const App = () => {
 
   // Loading and error states
   if (isLoading) {
-    return <Spin size="large" />;
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <Spin size="large" />
+      </div>
+    );
   }
 
   if (errorMessage) {
-    return <div>Error: {errorMessage}</div>;
+    return (
+      <div className="h-screen flex items-center justify-center text-red-500">
+        Error: {errorMessage}
+      </div>
+    );
   }
 
   // Render
   return (
-    <div className="flex">
-      <Menu
-        onClick={handleItemClick}
-        style={{ width: 256 }}
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['sub1']}
-        mode="inline"
-        items={navigationItems}
-        className="h-screen overflow-scroll"
-      />
-      <div className="mx-auto my-auto">
-        {isItemLoading ? (
-          <Spin size="large" />
-        ) : (
-          <CryptocurrencyCard currencyData={selectedItemData} />
-        )}
-      </div>
-    </div>
+    <Layout className="min-h-screen">
+      <Header className="bg-white shadow-sm flex items-center justify-between px-4">
+        <Title level={3} className="m-0">Crypto Viewer</Title>
+        <div className="flex items-center gap-4">
+          <Input
+            placeholder="Search cryptocurrencies..."
+            prefix={<SearchOutlined />}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="w-64"
+          />
+          <Badge count={favorites.length} className="mr-4">
+            <StarFilled className="text-yellow-400 text-xl" />
+          </Badge>
+        </div>
+      </Header>
+      <Layout>
+        <Sider width={300} className="bg-white">
+          <Menu
+            onClick={handleItemClick}
+            mode="inline"
+            items={navigationItems}
+            className="h-[calc(100vh-64px)] overflow-auto"
+          />
+        </Sider>
+        <Content className="p-6 bg-gray-50">
+          {isItemLoading ? (
+            <div className="h-full flex items-center justify-center">
+              <Spin size="large" />
+            </div>
+          ) : (
+            <div className="flex flex-col items-center">
+              <CryptocurrencyCard 
+                currencyData={selectedItemData} 
+                isFavorite={favorites.includes(selectedItemId)}
+                onToggleFavorite={() => toggleFavorite(selectedItemId)}
+              />
+            </div>
+          )}
+        </Content>
+      </Layout>
+    </Layout>
   );
 };
 
