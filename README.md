@@ -1,89 +1,102 @@
-# Crypto Viewer Frontend - Educational Project
+# Bitcoiner - Cryptocurrency Dashboard
 
-This is an educational project built to explore and learn modern web development technologies. The project demonstrates the integration of a React frontend with a backend API, focusing on practical implementation of current tech stack features.
-
-This is the frontend part of the Crypto Viewer project. The backend repository can be found at [crypto-viewer](https://github.com/yourusername/crypto-viewer).
-
-## Learning Objectives
-
-- React with modern hooks and state management
-- Integration with RESTful APIs
-- Responsive UI design with Ant Design
-- Environment configuration and best practices
-- Error handling and loading states
-- Git workflow and project organization
-
-## Tech Stack
-
-- Frontend: React + Vite
-- UI Library: Ant Design
-- HTTP Client: Axios
-- Backend: REST API ([crypto-viewer](https://github.com/yourusername/crypto-viewer))
+A modern React application for tracking cryptocurrency prices and market data.
 
 ## Features
 
-- Dynamic navigation menu
-- Item detail view
-- Responsive layout
-- Loading states
-- Error handling
+- Real-time cryptocurrency price tracking
+- Search functionality for cryptocurrencies
+- Favorites system to track preferred cryptocurrencies
+- Responsive design with modern UI
+- Price change indicators with color coding
+- Market cap information
+- 24-hour price change tracking
 
-## Prerequisites
+## Tech Stack
 
-- Node.js (v14 or higher)
-- npm or yarn
-- Backend API running (see [crypto-viewer](https://github.com/yourusername/crypto-viewer) for setup)
+- React
+- Vite
+- Ant Design (UI components)
+- Tailwind CSS (styling)
+- Axios (API calls)
 
-## Installation
+## Getting Started
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/crypto-viewer-frontend.git
-cd crypto-viewer-frontend
-```
-
+1. Clone the repository
 2. Install dependencies:
-```bash
-npm install
-# or
-yarn install
-```
-
+   ```bash
+   npm install
+   ```
 3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## Testing
+
+The project uses Vitest and React Testing Library for testing. The test setup includes:
+
+- Unit tests for components
+- Integration tests for component interactions
+- Jest DOM matchers for DOM assertions
+
+### Running Tests
+
+To run the tests:
 ```bash
-npm run dev
-# or
-yarn dev
+npm test
 ```
 
-## Environment Variables
+### Test Structure
 
-Create a `.env` file in the root directory with the following variables:
+Tests are located in `__tests__` directories next to their corresponding components. For example:
+- `src/components/__tests__/CryptocurrencyCard.test.jsx`
+
+### Component Data Structure
+
+The `CryptocurrencyCard` component expects the following data structure:
+
+```javascript
+{
+  id: string,          // Unique identifier for the cryptocurrency
+  name: string,        // Full name of the cryptocurrency
+  symbol: string,      // Trading symbol (e.g., 'btc')
+  quote: {
+    USD: {
+      price: number,           // Current price in USD
+      percent_change_24h: number,  // 24-hour price change percentage
+      market_cap: number       // Market capitalization
+    }
+  }
+}
 ```
-VITE_API_URL=http://localhost:8000
-```
 
-## Project Structure
+### Component Props
 
-```
-src/
-  ├── components/        # Reusable components
-  ├── App.jsx           # Main application component
-  └── main.jsx         # Application entry point
-```
+The `CryptocurrencyCard` component accepts the following props:
 
-## Learning Resources
+- `currencyData`: Object containing cryptocurrency data (required)
+- `isFavorite`: Boolean indicating if the cryptocurrency is in favorites (required)
+- `onToggleFavorite`: Function to handle favorite toggling (required)
 
-- [React Documentation](https://react.dev/)
-- [Ant Design Documentation](https://ant.design/)
-- [Vite Documentation](https://vitejs.dev/)
+## Development
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm test` - Run tests
+- `npm run lint` - Run ESLint
 
 ## Contributing
 
-This is an educational project, but if you'd like to contribute:
-
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
+
+## License
+
+This project is licensed under the MIT License.
